@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
 import './App.css';
-import axios from 'axios';
 import MyContext from './context/context';
 import Card from './assets/card';
 import Form from './assets/form';
@@ -17,11 +16,12 @@ function App() {
   });
   const [isAdding, setIsAdding] = useState(false);
 
-  async function fetchContacts() {
+  const fetchContacts = async () => {
     try {
-      const response = await axios.get('https://playground.4geeks.com/contact/agendas/joachimbosch/contacts');
-      console.log(response.data);
-      setList([response.data]);
+      const response = await fetch('https://playground.4geeks.com/contact/agendas/joachimbosch/contacts');
+      const apiList = await response.json();
+      setList(apiList.contacts);
+      console.log(apiList.contacts);
     } catch (error) {
       console.error('Error fetching contacts:', error);
     }
@@ -33,30 +33,41 @@ function App() {
 
   const addContact = async () => {
     try {
-      const response = await axios.post('https://playground.4geeks.com/contact/agendas/joachimbosch/contacts', form);
-      fetchContacts();
-      setForm({
-        fullName: "",
-        phone: "",
-        email: "",
-        address: "",
-        id: "",
-      });
-      setIsAdding(false)
-      console.log(response.data);
-    } catch (error) {
-      console.error('Error adding contact:', error);
-    }
-  };
+      await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts}`, {
+        method: 'POST', 
+        headers: {"Content-type": "application/json"},
+        body: JSON.stringify({
+          name: form.fullName, 
+          phone: form.phone, 
+          email: form.email,
+          address: form.address,
+          })
+        });
+        fetchContacts();
+        setForm({
+          fullName: "",
+          phone: "",
+          email: "",
+          address: "",
+          id: "",
+        });
+        setIsAdding(false);
+        fetchContacts();
+      } catch (error) {
+        console.error('Error adding contact:', error);
+      }
+    };
 
   const deleteContact = async (index) => {
     try {
-      await axios.delete(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/${id}`);
+        await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/${list[index].id}`, {
+        method: "DELETE"
+    });
       fetchContacts();
-    } catch (error) {
-      console.error('Error deleting contact:', error);
-    }
-  };
+  } catch (error) {
+    console.error('Error deleting contact:', error)
+  }
+    };
 
   let context = { contact, setContact, list, setList, fetchContacts, addContact, deleteContact, form, setForm, isAdding, setIsAdding };
 
@@ -66,7 +77,6 @@ function App() {
 
   const handleGoBack = () => {
     setIsAdding(false);
-    fetchContacts();
   };
 
   return (
@@ -82,7 +92,7 @@ function App() {
               </div>
               <div>
               {Array.isArray(list) && list.map((contact, index) => (
-                  <Card key={index} contact={contact} />
+                  <Card key={index} contact={contact} index={index}/>
                 ))}
               </div>
             </div>
