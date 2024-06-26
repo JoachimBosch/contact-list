@@ -4,21 +4,20 @@ import MyContext from './context/context';
 import Card from './assets/card';
 import Form from './assets/form';
 
+
 function App() {
-  const [contact, setContact] = useState("");
-  const [list, setList] = useState([]);
-  const [form, setForm] = useState({
-    fullName: "",
+  const [contact, setContact] = useState({
+    name: "",
     phone: "",
     email: "",
     address: "",
-    id: "",
   });
+  const [list, setList] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
 
   const fetchContacts = async () => {
     try {
-      const response = await fetch('https://playground.4geeks.com/contact/agendas/joachimbosch/contacts');
+      const response = await fetch('https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/');
       const apiList = await response.json();
       setList(apiList.contacts);
       console.log(apiList.contacts);
@@ -33,30 +32,30 @@ function App() {
 
   const addContact = async () => {
     try {
-      await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts}`, {
-        method: 'POST', 
-        headers: {"Content-type": "application/json"},
+      const response = await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/contacts`, {
+        method: 'POST',
+        headers: { "Content-type": "application/json" },
         body: JSON.stringify({
-          name: form.fullName, 
-          phone: form.phone, 
-          email: form.email,
-          address: form.address,
-          })
-        });
-        fetchContacts();
-        setForm({
-          fullName: "",
+          name: "",
           phone: "",
           email: "",
           address: "",
-          id: "",
-        });
-        setIsAdding(false);
-        fetchContacts();
-      } catch (error) {
-        console.error('Error adding contact:', error);
-      }
+        })
+      });
+      /* const newContact = await response.json();
+      setList(prevList => [...prevList, newContact]); */
+      /* setIsAdding(false); */
+      setContact({
+        name: "",
+        phone: "",
+        email: "",
+        address: "",
+      });
+    } catch (error) {
+      console.error('Error adding contact:', error);
     };
+    fetchContacts();
+  };
 
   const deleteContact = async (index) => {
     try {
@@ -64,12 +63,25 @@ function App() {
         method: "DELETE"
     });
       fetchContacts();
-  } catch (error) {
+    } catch (error) {
     console.error('Error deleting contact:', error)
-  }
-    };
+    }
+  };
 
-  let context = { contact, setContact, list, setList, fetchContacts, addContact, deleteContact, form, setForm, isAdding, setIsAdding };
+  const editContact = async (index) => {
+    const editContact = await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/${list[index].id}`, {
+                                method: 'PUT', 
+                                headers: {"Content-type": "application/json"},
+                                body: JSON.stringify({
+                                  name: contact.name, 
+                                  phone: contact.phone, 
+                                  email: contact.email,
+                                  address: contact.address})
+                                });
+    fetchContacts();
+  };
+
+  let context = { contact, setContact, list, setList, fetchContacts, addContact, deleteContact, isAdding, setIsAdding, editContact };
 
   const handleAddContactClick = () => {
     setIsAdding(true);
@@ -83,16 +95,21 @@ function App() {
     <>
       <MyContext.Provider value={context}>
         <div>
+          {/* <ul>{list ? list.map((el, i) =>{
+            return <li key={i}>{el.name}</li>;
+          })
+          : "no data"}
+          </ul> */}
           {isAdding ? (
-            <Form />
+            <Form contact={props.contact} setIsEditing={setIsEditing}/>
           ) : (
             <div>
               <div className="container d-flex flex-row justify-content-end mb-3" style={{ width: '50vw' }}>
                 <button type="button" className="btn btn-success" onClick={handleAddContactClick}>Create new contact</button>
               </div>
               <div>
-              {Array.isArray(list) && list.map((contact, index) => (
-                  <Card key={index} contact={contact} index={index}/>
+              {list && list.map((el, index) => (
+                  <Card key={el.id} name={el.name} address={el.address} phone={el.phone} email={el.email} index={index}/>
                 ))}
               </div>
             </div>
