@@ -6,14 +6,21 @@ import Form from './assets/form';
 
 
 function App() {
+  const [list, setList] = useState([]);
+  const [isAdding, setIsAdding] = useState(false);
+
   const [contact, setContact] = useState({
     name: "",
     phone: "",
     email: "",
     address: "",
   });
-  const [list, setList] = useState([]);
-  const [isAdding, setIsAdding] = useState(false);
+  const [editing, setEditing] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    address: "",
+  })
 
   const fetchContacts = async () => {
     try {
@@ -32,25 +39,15 @@ function App() {
 
   const addContact = async () => {
     try {
-      const response = await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/contacts`, {
-        method: 'POST',
+      const response = await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/`, {
+        method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({
-          name: "",
-          phone: "",
-          email: "",
-          address: "",
-        })
-      });
-      /* const newContact = await response.json();
-      setList(prevList => [...prevList, newContact]); */
-      /* setIsAdding(false); */
-      setContact({
-        name: "",
-        phone: "",
-        email: "",
-        address: "",
-      });
+          name: contact.name, 
+          phone: contact.phone, 
+          email: contact.email,
+          address: contact.address,
+        })});
     } catch (error) {
       console.error('Error adding contact:', error);
     };
@@ -69,19 +66,20 @@ function App() {
   };
 
   const editContact = async (index) => {
-    const editContact = await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/${list[index].id}`, {
+    const editContact = await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/${list[index]}`, {
                                 method: 'PUT', 
                                 headers: {"Content-type": "application/json"},
                                 body: JSON.stringify({
                                   name: contact.name, 
                                   phone: contact.phone, 
                                   email: contact.email,
-                                  address: contact.address})
-                                });
+                                  address: contact.address,
+                                }),
+    });
     fetchContacts();
   };
 
-  let context = { contact, setContact, list, setList, fetchContacts, addContact, deleteContact, isAdding, setIsAdding, editContact };
+  let context = { contact, setContact, list, setList, fetchContacts, addContact, deleteContact, isAdding, setIsAdding, editContact, editing, setEditing };
 
   const handleAddContactClick = () => {
     setIsAdding(true);
@@ -101,7 +99,7 @@ function App() {
           : "no data"}
           </ul> */}
           {isAdding ? (
-            <Form contact={props.contact} setIsEditing={setIsEditing}/>
+            <Form contact={contact} setIsAdding={setIsAdding}/>
           ) : (
             <div>
               <div className="container d-flex flex-row justify-content-end mb-3" style={{ width: '50vw' }}>

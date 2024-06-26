@@ -7,10 +7,19 @@ import Form from "./form";
 
 function Card(props) {
   const [isEditing, setIsEditing] = useState(false);
-  const { deleteContact } = useContext(MyContext);
+  const { deleteContact, contact, setContact } = useContext(MyContext);
+  
 
   const handleEditClick = () => {
+    setContact({
+      name: contact.name,
+      phone: contact.phone,
+      email: contact.email,
+      address: contact.address,
+      id: contact.id,
+    });
     setIsEditing(true);
+    
   };
 
   const handleDeleteClick = () => {
@@ -22,7 +31,7 @@ function Card(props) {
       {isEditing ? (
         <Form contact={props.contact} setIsEditing={setIsEditing} />
       ) : (
-        <div className="container border rounded d-flex flex-row mb-2" style={{ width: '50vw' }}>
+        <div className="container border rounded d-flex flex-row mb-2" style={{ width: '50vw' }} index={props.index}>
           <div className="col-3">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Arnold_Schwarzenegger_by_Gage_Skidmore_4.jpg/330px-Arnold_Schwarzenegger_by_Gage_Skidmore_4.jpg" className="img-thumbnail rounded-circle my-2" style={{ width: "150px", height: "150px" }} />
           </div>
