@@ -39,15 +39,18 @@ function App() {
 
   const addContact = async () => {
     try {
+      let body = JSON.stringify({
+        name: contact.name, 
+        phone: contact.phone, 
+        email: contact.email,
+        address: contact.address,
+      })
       const response = await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/`, {
         method: "POST",
         headers: { "Content-type": "application/json" },
-        body: JSON.stringify({
-          name: contact.name, 
-          phone: contact.phone, 
-          email: contact.email,
-          address: contact.address,
-        })});
+        body: body});
+        await response.json();
+        console.log(response);
     } catch (error) {
       console.error('Error adding contact:', error);
     };
@@ -65,8 +68,8 @@ function App() {
     }
   };
 
-  const editContact = async (index) => {
-    const editContact = await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/${list[index]}`, {
+  const editContact = async (id) => {
+    const editContact = await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/${contact.id}`, {
                                 method: 'PUT', 
                                 headers: {"Content-type": "application/json"},
                                 body: JSON.stringify({
@@ -99,7 +102,7 @@ function App() {
           : "no data"}
           </ul> */}
           {isAdding ? (
-            <Form contact={contact} setIsAdding={setIsAdding}/>
+            <Form initialContact={contact} setIsAdding={setIsAdding}/>
           ) : (
             <div>
               <div className="container d-flex flex-row justify-content-end mb-3" style={{ width: '50vw' }}>

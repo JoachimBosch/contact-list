@@ -1,8 +1,8 @@
 import MyContext from "../context/context";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
-function Form(props) {
-  const { contact, setContact, addContact, isAdding } = useContext(MyContext);
+function Form({ initialContact }) {
+  const { contact, setContact, addContact, editContact, isAdding } = useContext(MyContext);
   
   return (
     <>
@@ -37,7 +37,10 @@ function Form(props) {
                              address: e.target.value})} required />
      </div>
      <div className="mt-3 mb-3 d-flex align-items-center">
-       <button type="submit" className="btn btn-primary" style={{ width: '50vw' }} onSubmit={addContact}>Save contact</button>
+       <button type="submit" className="btn btn-primary" style={{ width: '50vw' }} onClick={(e) => {
+        e.preventDefault();
+        addContact();
+       }}>Save contact</button>
      </div>
    </form>
  </div>
