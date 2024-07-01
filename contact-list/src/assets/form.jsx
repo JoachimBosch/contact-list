@@ -1,9 +1,13 @@
 import MyContext from "../context/context";
-import { useState, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 
-function Form({ initialContact }) {
-  const { contact, setContact, addContact, editContact, isAdding, setIsAdding } = useContext(MyContext);
+function Form({ initialContact, setIsAdding }) {
+  const { contact, setContact, addContact, editContact, isAdding, setIsEditing } = useContext(MyContext);
   
+  useEffect(() => {
+    setContact(initialContact);
+  }, [initialContact, setContact]);
+
   return (
     <>
     
@@ -39,11 +43,14 @@ function Form({ initialContact }) {
      <div className="mt-3 mb-3 d-flex align-items-center">
        <button type="submit" className="btn btn-primary" style={{ width: '50vw' }} onClick={(e) => {
         e.preventDefault();
-        {
-          isAdding ? addContact() : editContact()
+        if (isAdding) {
+          addContact();
+        } else {
+          editContact();
         }
         ;
         setIsAdding(false);
+        setIsEditing(false);
        }}>Save contact</button>
      </div>
    </form>

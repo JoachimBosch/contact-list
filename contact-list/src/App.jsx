@@ -9,6 +9,8 @@ import Form from './assets/form';
 function App() {
   const [list, setList] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentContactId, setCurrentContactId] = useState(null);
 
   const [contact, setContact] = useState({
     name: "",
@@ -16,7 +18,7 @@ function App() {
     email: "",
     address: "",
   });
-  const [editing, setEditing] = useState({
+  const [editingContact, setEditingContact] = useState({
     name: "",
     phone: "",
     email: "",
@@ -88,7 +90,7 @@ function App() {
     fetchContacts();
   };
 
-  let context = { contact, setContact, list, setList, fetchContacts, addContact, deleteContact, isAdding, setIsAdding, editContact, editing, setEditing };
+  let context = { contact, setContact, list, setList, fetchContacts, addContact, deleteContact, isAdding, setIsAdding, editContact,  isEditing, setIsEditing, setCurrentContactId };
 
   const handleAddContactClick = () => {
     setIsAdding(true);
@@ -96,18 +98,14 @@ function App() {
 
   const handleGoBack = () => {
     setIsAdding(false);
+    setIsEditing(false);
   };
 
   return (
     <>
       <MyContext.Provider value={context}>
         <div>
-          {/* <ul>{list ? list.map((el, i) =>{
-            return <li key={i}>{el.name}</li>;
-          })
-          : "no data"}
-          </ul> */}
-          {isAdding ? (
+          {isAdding  || isEditing ? (
             <Form initialContact={contact} setIsAdding={setIsAdding}/>
           ) : (
             <div>
