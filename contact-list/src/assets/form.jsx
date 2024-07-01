@@ -2,7 +2,7 @@ import MyContext from "../context/context";
 import { useContext, useEffect } from "react";
 
 function Form({ initialContact, setIsAdding }) {
-  const { contact, setContact, addContact, editContact, isAdding, setIsEditing } = useContext(MyContext);
+  const { contact, setContact, addContact, editContact, isAdding, setIsEditing, currentContactId } = useContext(MyContext);
   
   useEffect(() => {
     setContact(initialContact);
@@ -46,7 +46,7 @@ function Form({ initialContact, setIsAdding }) {
         if (isAdding) {
           addContact();
         } else {
-          editContact();
+          editContact(currentContactId);
         }
         ;
         setIsAdding(false);

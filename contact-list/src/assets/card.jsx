@@ -7,12 +7,12 @@ import Form from "./form";
 
 function Card(props) {
   
-  const { deleteContact, isEditing, setContact, setIsEditing, setCurrentContactId } = useContext(MyContext);
+  const { list, deleteContact, isEditing, setContact, setIsEditing, setCurrentContactId } = useContext(MyContext);
   
 
   const handleEditClick = () => {
+    setCurrentContactId(list[props.index].id);
     setIsEditing(true);
-    setCurrentContactId(props.id);
     setContact({
       name: props.name,
       phone: props.phone,

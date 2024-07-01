@@ -18,12 +18,6 @@ function App() {
     email: "",
     address: "",
   });
-  const [editingContact, setEditingContact] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    address: "",
-  })
 
   const fetchContacts = async () => {
     try {
@@ -71,7 +65,7 @@ function App() {
     }
   };
 
-  const editContact = async () => {
+  const editContact = async (currentContactId) => {
     try {
       let body = JSON.stringify({
         name: contact.name, 
@@ -79,7 +73,7 @@ function App() {
         email: contact.email,
         address: contact.address,
       })
-      const response = await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/${contact.id}`, {
+      const response = await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/${currentContactId}`, {
                                 method: 'PUT', 
                                 headers: {"Content-type": "application/json"}, body: body});
                                 await response.json();
@@ -88,9 +82,15 @@ function App() {
       console.error('Error adding contact:', error);
     };
     fetchContacts();
+    setContact({
+      name: "",
+      phone: "",
+      email: "",
+      address: "",
+    })
   };
 
-  let context = { contact, setContact, list, setList, fetchContacts, addContact, deleteContact, isAdding, setIsAdding, editContact,  isEditing, setIsEditing, setCurrentContactId };
+  let context = { contact, setContact, list, setList, fetchContacts, addContact, deleteContact, isAdding, setIsAdding, editContact,  isEditing, setIsEditing, setCurrentContactId, currentContactId };
 
   const handleAddContactClick = () => {
     setIsAdding(true);
@@ -114,7 +114,7 @@ function App() {
               </div>
               <div>
               {list && list.map((el, index) => (
-                  <Card key={el.id} name={el.name} address={el.address} phone={el.phone} email={el.email} index={index}/>
+                  <Card key={el.id} name={el.name} address={el.address} phone={el.phone} email={el.email} index={index} id={el.id}/>
                 ))}
               </div>
             </div>
