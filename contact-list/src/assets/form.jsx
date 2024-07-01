@@ -2,7 +2,7 @@ import MyContext from "../context/context";
 import { useState, useContext, useEffect } from "react";
 
 function Form({ initialContact }) {
-  const { contact, setContact, addContact, editContact, isAdding } = useContext(MyContext);
+  const { contact, setContact, addContact, editContact, isAdding, setIsAdding } = useContext(MyContext);
   
   return (
     <>
@@ -39,7 +39,11 @@ function Form({ initialContact }) {
      <div className="mt-3 mb-3 d-flex align-items-center">
        <button type="submit" className="btn btn-primary" style={{ width: '50vw' }} onClick={(e) => {
         e.preventDefault();
-        addContact();
+        {
+          isAdding ? addContact() : editContact()
+        }
+        ;
+        setIsAdding(false);
        }}>Save contact</button>
      </div>
    </form>

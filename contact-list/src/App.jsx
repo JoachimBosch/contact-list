@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useContext } from 'react';
 import './App.css';
 import MyContext from './context/context';
@@ -68,17 +69,22 @@ function App() {
     }
   };
 
-  const editContact = async (id) => {
-    const editContact = await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/${contact.id}`, {
+  const editContact = async () => {
+    try {
+      let body = JSON.stringify({
+        name: contact.name, 
+        phone: contact.phone, 
+        email: contact.email,
+        address: contact.address,
+      })
+      const response = await fetch(`https://playground.4geeks.com/contact/agendas/joachimbosch/contacts/${contact.id}`, {
                                 method: 'PUT', 
-                                headers: {"Content-type": "application/json"},
-                                body: JSON.stringify({
-                                  name: contact.name, 
-                                  phone: contact.phone, 
-                                  email: contact.email,
-                                  address: contact.address,
-                                }),
-    });
+                                headers: {"Content-type": "application/json"}, body: body});
+                                await response.json();
+                                console.log(response);
+    } catch (error) {
+      console.error('Error adding contact:', error);
+    };
     fetchContacts();
   };
 

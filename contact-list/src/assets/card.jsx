@@ -6,8 +6,8 @@ import Form from "./form";
 
 
 function Card(props) {
-  const [isEditing, setIsEditing] = useState(false);
-  const { deleteContact, contact, setContact } = useContext(MyContext);
+  
+  const { deleteContact, contact, setContact, isEditing, setIsEditing } = useContext(MyContext);
   
 
   const handleEditClick = () => {
